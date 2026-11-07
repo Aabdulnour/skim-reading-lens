@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible reading-lens problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Use synthetic text. Remove private conversations, page URLs, names, screenshots with personal details, and secrets. Follow SECURITY.md for vulnerabilities."
+  - type: input
+    id: version
+    attributes:
+      label: Skim version
+      placeholder: 0.2.1
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser version and operating system
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does it happen?
+      options:
+        - Browser dock
+        - Extension popup or settings
+        - Local extension reader
+        - Hosted reading lab
+        - Webcam calibration or validation
+        - Optional local Jev server
+        - Installation or update
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include a short artificial paragraph when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed secrets and private page content from this report.
+          required: true

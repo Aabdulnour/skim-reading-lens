@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.DS_Store
+.openai/
+dist/downloads/
+__pycache__/
+*.py[cod]
+__qa*/

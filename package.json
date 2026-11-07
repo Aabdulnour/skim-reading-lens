@@ -1,0 +1,18 @@
+{
+  "name": "skim-attention-lab",
+  "version": "0.2.1",
+  "private": true,
+  "description": "A local reading lens with an optional per-site Chrome dock and a separate experimental webcam lab.",
+  "license": "GPL-3.0-only",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.* && node extension/tests/check.cjs",
+    "test:release": "python3 -B -m unittest discover -s tests -p 'test_release_tooling.py'",
+    "package": "python3 scripts/package.py",
+    "release:check": "python3 scripts/release_check.py",
+    "release": "npm test && npm run test:release && npm run package && npm run release:check"
+  }
+}

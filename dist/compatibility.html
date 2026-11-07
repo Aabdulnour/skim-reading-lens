@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Can this browser run webcam mode? | Skim Reading Lens</title>
+  <meta name="description" content="Check whether this browser can start Skim's webcam experiment. The check keeps your camera off.">
+  <meta name="theme-color" content="#f5f5ed">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+  <script src="release-config.js" defer></script>
+  <script src="site.js" defer></script>
+  <script src="gaze.js" defer></script>
+  <script src="compatibility.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="nav wrap">
+    <a class="brand" href="./" aria-label="Skim Reading Lens home"><img src="icon.svg" alt="" width="35" height="35"><span>skim<span class="brand-dot">.</span></span><span class="brand-label">READING LENS</span></a>
+    <nav aria-label="Main navigation"><a href="./#how">How it works</a><a href="lab.html">Try the lab</a><a class="button small" href="install.html" data-install-link>Get the beta <span>↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section class="page-hero wrap">
+      <p class="eyebrow">BEFORE YOU TURN ON THE CAMERA</p>
+      <h1>Can this browser run webcam mode?</h1>
+      <p class="lead">Check the setup for Skim's camera experiment. Your webcam stays off throughout this check.</p>
+    </section>
+    <div class="page-content wrap">
+      <section class="release-card" aria-labelledby="check-heading">
+        <span class="release-status">CAMERA STAYS OFF</span>
+        <h2 id="check-heading">Start with a setup check.</h2>
+        <p id="check-details">After you click, this page loads the approximately 19 MB tracking library and its supporting files from this site, then tries starting them. Files already in your browser's cache may load faster. The check can take up to 45 seconds.</p>
+        <p id="check-privacy">The result stays on this page. Nothing is sent as a diagnostic report, and this check does not ask for camera permission.</p>
+        <div class="button-row">
+          <button class="button" type="button" id="check-compatibility" aria-describedby="check-details check-privacy">Check compatibility</button>
+        </div>
+        <p class="report-note" id="check-status" role="status" aria-live="polite" aria-atomic="true">No check has been run.</p>
+        <noscript><p>Enable JavaScript to run this check and use the reading lab.</p></noscript>
+      </section>
+
+      <section class="notice" id="check-result" aria-labelledby="result-heading" hidden>
+        <strong id="result-heading"></strong>
+        <p id="result-message"></p>
+      </section>
+      <div class="button-row" id="webcam-next" hidden>
+        <a class="button" href="lab.html">Continue to the webcam lab <span>↗</span></a>
+      </div>
+      <p class="report-note" id="webcam-next-note" hidden>The lab opens with the camera off. Choose Webcam gaze there when you are ready.</p>
+
+      <section class="section-block">
+        <h2>What a passing check means</h2>
+        <p>Your browser started the tracking software. You will still need to choose camera access, calibrate, and pass the lab's separate accuracy check. This result does not establish how accurately Skim can follow your eyes on your device.</p>
+        <p>Camera access, lighting, head movement, and your browser's settings can affect the next step. Read the <a href="privacy.html">privacy details</a> before trying the experiment.</p>
+      </section>
+
+      <section class="section-block">
+        <h2>Your pointer is ready to try.</h2>
+        <p>The reading lab and extension work with your pointer. Move over a paragraph, choose what matters, and keep the original words in view.</p>
+        <div class="button-row">
+          <a class="button secondary" href="lab.html">Read with your pointer <span>↗</span></a>
+          <a class="text-link" href="help.html">Get help <span>↗</span></a>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="footer wrap">
+    <a class="brand small-brand" href="./">skim<span class="brand-dot">.</span></a>
+    <p>A reading experiment by Anthony.<br>Free to try. Open source under GPLv3.</p>
+    <nav aria-label="Footer"><a href="help.html">Help</a><a href="privacy.html">Privacy</a><a href="research.html">Research</a><a data-repository-link hidden>GitHub ↗</a><a href="install.html#developers">Source &amp; release kit</a></nav>
+  </footer>
+</body>
+</html>

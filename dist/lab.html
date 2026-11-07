@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f8f1"><meta name="description" content="A reading lens that follows your attention. Find the useful sentence in a long answer, with local text selection and experimental webcam gaze.">
+<title>Skim Reading Lab | Pointer and experimental webcam gaze</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+<script src="core.js" defer></script><script src="gaze.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Skim home"><svg viewBox="0 0 42 28" aria-hidden="true"><path d="M2 14C11-2 31-2 40 14C31 30 11 30 2 14Z" fill="currentColor"/><circle cx="21" cy="14" r="8" fill="#c8ed93"/><circle cx="21" cy="14" r="3.5" fill="currentColor"/></svg><span>skim<span class="brand-dot">.</span></span></a>
+  <span class="nav-description">For the way you actually read.</span>
+  <nav class="top-actions" aria-label="Main"><button id="how-button" class="text-button">How it works <span>↗</span></button><a class="pill-link" href="install.html">Get Skim <span>↓</span></a></nav>
+</header>
+<main>
+<section class="intro">
+ <div><div class="eyebrow"><span class="small-star">✳</span> A LITTLE LESS INFORMATION OVERLOAD</div><h1>You were going<br>to <span class="italic">skim</span> it anyway<span class="green-dot">.</span></h1><p class="intro-copy">Let your attention lead. Skim brings the useful sentence forward,<br class="desktop-break"> without moving the page or rewriting what it says.</p></div>
+ <div class="intro-aside"><div class="made-for"><span class="eye-small">◉</span><div>Built for long answers.<br><strong>And short attention spans.</strong></div></div><div class="tiny-note"><span class="status-dot"></span> Your text stays in this browser by default.</div></div>
+</section>
+<section class="studio" aria-label="Interactive reading studio">
+  <div class="studio-top"><div class="studio-title"><span class="live-square"></span><strong>The reading room</strong><span class="beta">GAZE LAB</span></div><div class="input-status" id="input-status"><span class="status-dot"></span> Pointer mode</div></div>
+  <div class="workspace">
+    <aside class="controls">
+      <div class="control-section"><div class="section-label">01 <span>YOUR ATTENTION</span></div><div class="mode-switch" role="group" aria-label="Attention input"><button id="pointer-button" class="mode active" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="m5 3 14 10-7 1-3 6z"/></svg><span>Pointer<small>Move to explore</small></span><span class="radio"></span></button><button id="camera-button" class="mode" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><span>Webcam gaze<small>Calibrate first</small></span><span class="radio"></span></button></div><button id="demo-button" class="demo-button"><span>▷</span> Play the 20-second demo</button><p id="mode-note" class="control-note">Move over a paragraph and linger. The lens follows your pointer, not your eyes.</p></div>
+      <div class="control-section"><div class="section-label">02 <span>WHAT MATTERS?</span></div><div class="goal-options" role="group" aria-label="Reading goal"><button class="goal active" data-goal="answer" aria-pressed="true">The answer</button><button class="goal" data-goal="action" aria-pressed="false">Next steps</button><button class="goal" data-goal="caveat" aria-pressed="false">The catch</button><button class="goal" data-goal="evidence" aria-pressed="false">Key details</button></div><label class="focus-label" for="topic">Looking for something specific?</label><div class="input-wrap"><input id="topic" maxlength="180" placeholder="e.g. cost, privacy, next step" autocomplete="off"><span>⌕</span></div></div>
+      <div class="control-section last-control"><div class="section-label">03 <span>THE LENS</span></div><label class="switch-row" for="lens-toggle"><span>Emphasize key sentences</span><input type="checkbox" id="lens-toggle" checked><span class="switch" aria-hidden="true"></span></label><label class="switch-row quiet" for="cloud-toggle" id="cloud-row" hidden><span>Use Jev for this paragraph</span><input type="checkbox" id="cloud-toggle"><span class="switch" aria-hidden="true"></span></label><p id="engine-note" class="control-note">Local sentence scoring. No AI calls or text uploads.</p><button id="pause-button" class="pause-button">Ⅱ Pause attention</button></div>
+      <div class="sidebar-footer"><span class="mini-eye">◉</span><span>A lens. Not a fact-checker.</span></div>
+    </aside>
+    <div class="reader-column">
+      <div class="reader-tabs" role="tablist" aria-label="Text source"><button role="tab" id="tab-answer" class="reader-tab active" data-sample="answer" aria-selected="true">AI answer</button><button role="tab" id="tab-article" class="reader-tab" data-sample="article" aria-selected="false">An article</button><button role="tab" id="tab-own" class="reader-tab" data-sample="own" aria-selected="false">Paste your own <span>+</span></button><span class="sample-label" id="sample-label">DEMO TEXT</span></div>
+      <div class="document-meta"><div class="document-icon" id="document-icon">✳</div><div><span class="document-source" id="document-source">A VERY FAMILIAR KIND OF ANSWER</span><h2 id="document-title">“Is this actually worth building?”</h2></div></div>
+      <div class="document-intro" id="document-intro"><span>You asked</span><p>Could eye tracking make long AI answers easier to skim?</p></div>
+      <div id="reader" class="reader lens-on" aria-label="Reading passage"></div>
+      <div class="reader-bottom"><span id="word-count"></span><span>Original wording. Always.</span></div>
+    </div>
+    <aside class="inspector" aria-label="Attention and selected sentence">
+      <div class="inspector-header"><span class="status-dot"></span> <span id="lens-state">LENS IS ON</span><button id="reset-button" aria-label="Reset attention trail" title="Reset attention trail">↻</button></div>
+      <div class="attention-card"><div class="section-label">YOUR ATTENTION</div><div class="attention-map" id="attention-map" aria-label="Paragraph attention trail"></div><div class="map-caption"><span id="region-label">Paragraph 01</span><span id="dwell-label">ready</span></div></div>
+      <div class="catch-card"><div class="catch-heading"><span>✦</span><h3>Worth catching</h3></div><p class="exact-label">EXACT SENTENCE FROM THE TEXT</p><blockquote id="picked-quote"></blockquote><div id="picked-tags" class="picked-tags"></div><div class="selection-reason" id="selection-reason"></div></div>
+      <div class="source-note"><span class="note-icon">↳</span><p>Highlighting a claim doesn’t make it true. Keep its context. Check its sources.</p></div>
+      <button id="pin-button" class="pin-button">⌑ Pin this sentence</button><div id="pinned-list" class="pinned-list" aria-label="Pinned sentences"></div>
+      <div class="keys"><kbd>←</kbd><kbd>→</kbd> move between paragraphs<br><kbd>Space</kbd> pause the lens</div>
+    </aside>
+  </div>
+  <div class="studio-footer"><span><span class="dot-outline"></span> <span id="footer-status">Pointer input · local decisions · no recording</span></span><span>Made for curious skimmers. <span class="footer-arrow">↗</span></span></div>
+</section>
+<section class="bottom-strip"><p><strong>Your eyes find the neighborhood.</strong> Skim finds a sentence worth noticing.</p><div><span>KEEP THE CONTEXT</span><span>SKIP THE NOISE</span><span>STAY CURIOUS</span></div></section>
+<footer class="page-footer"><span>Skim Reading Lens / the experimental lab</span><div><button id="privacy-button">Privacy & limits</button><a href="downloads/skim-source.zip" download>Source code ↗</a><a href="research.html">The thinking behind it ↗</a></div></footer>
+</main>
+<div class="gaze-dot" id="gaze-dot" hidden aria-hidden="true"><span></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="paste-dialog"><form id="paste-form"><div class="dialog-eyebrow">MAKE IT YOURS</div><button type="button" class="dialog-close" aria-label="Close dialog">×</button><h2>Bring your wall of text.</h2><p>Paste an AI response, an article, or a draft. Blank lines separate paragraphs. Skim keeps the original wording.</p><label for="paste-title">Title <span>(optional)</span></label><input id="paste-title" maxlength="100" placeholder="Something worth a closer look"><label for="paste-text">Your text</label><textarea id="paste-text" maxlength="24000" rows="10" required placeholder="Paste your text here. It stays in this browser."></textarea><div class="dialog-bottom"><span id="paste-count">0 / 24,000 characters</span><button type="submit" class="primary-button">Open in Skim ↗</button></div></form></dialog>
+<dialog id="info-dialog"><button class="dialog-close" aria-label="Close dialog">×</button><div class="dialog-eyebrow">BEHIND THE LENS</div><h2 id="info-title">Read the way you read.</h2><div id="info-body"></div><button class="primary-button info-done">Got it ↗</button></dialog>
+</body>
+</html>

@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest a concrete improvement to the reading experience.
+title: "[Idea]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What reading task is difficult today?
+      description: Describe the situation before proposing a feature.
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Proposed improvement
+      description: Explain how someone would use it.
+    validations:
+      required: true
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Tradeoffs or alternatives
+      description: Consider permissions, interruption, accessibility, and local processing.

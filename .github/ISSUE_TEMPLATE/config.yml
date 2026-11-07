@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installation and troubleshooting
+    url: https://skim-attention-lab-anthony.aabdulnour01.chatgpt.site/help.html
+    about: Find setup instructions and a privacy-safe diagnostic template.
+  - name: Security reporting
+    url: https://github.com/Aabdulnour/skim-reading-lens/blob/main/SECURITY.md
+    about: Use the private contact in the security policy for vulnerabilities.
