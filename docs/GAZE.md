@@ -2,6 +2,10 @@
 
 Skim's webcam experiment runs in the hosted reading lab, or the local lab opened with `npm start`. The Chrome extension continues to use pointer and keyboard input. The camera is off until someone opens camera setup and selects **Start camera setup**.
 
+## What changed in 0.2.2
+
+Calibration now counts accepted face samples rather than every click. The pinned WebGazer API can silently reject a click when eye features are unavailable, so Skim checks the active ridge model before and after recording. A rejected click keeps the current target and asks the user to adjust face position or lighting. If stored samples cannot be inspected, setup stops the camera and offers retry guidance. All 45 accepted samples are still required before the separate held-out check; no accuracy threshold was relaxed.
+
 ## What changed in 0.2.1
 
 The earlier adapter downloaded an unversioned WebGazer script from Brown University. WebGazer 3.5.3 uses `./mediapipe/face_mesh` as its default model path. That path resolves against the page containing it, and the earlier Skim deployment did not contain that directory. A successful script download therefore did not establish a working face detector.
@@ -73,7 +77,7 @@ The wrapper stops tracks itself because this pinned WebGazer version's `end()` d
 
 ## Accuracy gates
 
-Calibration uses nine screen targets, with five deliberate pointer clicks while looking at each target. Mouse movement is not emitted as gaze. Automatic pointer training is disabled before the heldout check.
+Calibration uses nine screen targets, with five accepted samples from deliberate pointer clicks while looking at each target. Mouse movement is not emitted as gaze. Automatic pointer training is disabled before the heldout check.
 
 Validation uses five different target positions, with 850 ms to settle and 1,800 ms to collect estimates at each target. The target positions do not train the regression. Each target needs at least eight usable predictions and 70% valid coverage of the callbacks received during its measurement period.
 

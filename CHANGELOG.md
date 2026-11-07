@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2 - 2026-11-06
+
+- Copy or download pinned original sentences with the source title and paragraph references from the web lab and packaged reader.
+- Clear pin counts, an empty state, and a download fallback when clipboard access is unavailable.
+- Updated privacy wording for deliberate local exports and restored keyboard focus after removing a pin.
+- Calibration advances only on verified stored face samples. Rejected clicks keep the current target, and unreadable calibration data stops setup with retry guidance.
+- Clear stale on-page highlights when the pointer leaves or the window loses focus; scrolling cannot revive them before the pointer returns.
+
 ## 0.2.1 - 2026-11-06
 
 - Public GitHub home, contributor instructions for Claude Code and other agents, and a real support address.

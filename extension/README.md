@@ -1,6 +1,6 @@
 # Skim Reading Lens for Chrome
 
-Version **0.2.1**, consumer beta candidate. Chrome 120 or newer.
+Version **0.2.2**, consumer beta candidate. Chrome 120 or newer.
 
 Skim is a local reading lens for long answers and articles. It follows your pointer, highlights an exact sentence, and keeps the surrounding text available. It does not verify claims or measure understanding. Sentence scoring currently uses English-language cues.
 

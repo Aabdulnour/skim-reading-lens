@@ -149,7 +149,8 @@
         if (!destroyed && !paused && !frozen) selectTarget(document.elementFromPoint(lastPointer.x, lastPointer.y));
       }, 180);
     }
-    function blur() { clearTimeout(scrollTimer); reset(); }
+    function blur() { lastPointer = null; clearTimeout(scrollTimer); reset(); }
+    function leave(event) { if (event.relatedTarget === null) blur(); }
     function key(event) {
       const element = event.composedPath()[0];
       if (event.key === 'Escape' && !event.defaultPrevented && !(element instanceof Element && element.closest(editable))) destroy();
@@ -208,6 +209,7 @@
       if (destroyed) return;
       destroyed = true; clearTimeout(scrollTimer); reset();
       document.removeEventListener('pointermove', move, true);
+      document.removeEventListener('pointerout', leave, true);
       document.removeEventListener('scroll', scroll, true);
       document.removeEventListener('keydown', key, true);
       document.removeEventListener('visibilitychange', visibility);
@@ -233,6 +235,7 @@
     minimizeButton.addEventListener('click', () => setCompact(!compact, true));
     shadow.querySelector('.close').addEventListener('click', destroy);
     document.addEventListener('pointermove', move, true);
+    document.addEventListener('pointerout', leave, true);
     document.addEventListener('scroll', scroll, {capture: true, passive: true});
     document.addEventListener('keydown', key, true);
     document.addEventListener('visibilitychange', visibility);

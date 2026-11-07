@@ -1,4 +1,4 @@
-# Release Skim Reading Lens 0.2.1
+# Release Skim Reading Lens 0.2.2
 
 This packet prepares an installable beta and a Chrome Web Store submission. It does not create a publisher account, accept legal declarations, pay a registration fee, or obtain Google's approval.
 
@@ -6,7 +6,7 @@ This packet prepares an installable beta and a Chrome Web Store submission. It d
 
 Use the Chrome Web Store for ordinary users. Chrome handles installation and normal updates through the store. Keep the unpacked ZIP for contributors and early testers, with its manual-update limitation visible. Keep the live reading lab available without installation.
 
-The extension is the primary product. Its compact dock lives at the top of a browser page. A systemwide Mac notch companion is a separate future application, with its own permissions, packaging, update mechanism, signing, and maintenance. The v0.2.1 downloads do not contain a Mac application.
+The extension is the primary product. Its compact dock lives at the top of a browser page. A systemwide Mac notch companion is a separate future application, with its own permissions, packaging, update mechanism, signing, and maintenance. The v0.2.2 downloads do not contain a Mac application.
 
 The canonical development repository is [Aabdulnour/skim-reading-lens](https://github.com/Aabdulnour/skim-reading-lens). It provides the source, issues, and pull requests. The project site hosts the demo and downloadable builds. The sanitized source ZIP is another complete distribution format and can be rebuilt without deployment credentials.
 
@@ -14,10 +14,10 @@ The canonical development repository is [Aabdulnour/skim-reading-lens](https://g
 
 | File | Use |
 | --- | --- |
-| skim-chrome-store-v0.2.1.zip | Upload this to the Chrome Web Store |
+| skim-chrome-store-v0.2.2.zip | Upload this to the Chrome Web Store |
 | skim-extension.zip | Unzip and load in Chrome Developer mode for a beta test |
 | skim-source.zip | Read, modify, and rebuild the complete GPL project |
-| skim-release-kit-v0.2.1.zip | All store materials and source in one handoff |
+| skim-release-kit-v0.2.2.zip | All store materials and source in one handoff |
 | SHA256SUMS | Verify the four ZIPs |
 
 The store upload has manifest.json at its root, as required by the [store preparation guide](https://developer.chrome.com/docs/webstore/prepare). The source ZIP is deliberately a different artifact.
@@ -62,6 +62,7 @@ Use a normal desktop Chrome profile or a separate test profile. Do not run two S
 | Install the unpacked candidate | One welcome page opens and the product name/icons are correct |
 | Start practice on the welcome page | The actual lens highlights an original sentence |
 | Open an ordinary article and start once | Dock appears; page layout and source wording remain intact |
+| Move the pointer out of the page, scroll, then return | The sentence clears while the pointer is outside and returns only after a fresh paragraph focus |
 | Change reading goal | The lens selects an exact original sentence using the chosen local rule; no remote request or login is required |
 | Reject the site's optional permission request | One-off use continues; the site is not remembered |
 | Approve remembering one site | Reloading and revisiting that site restores the dock |
@@ -80,6 +81,29 @@ Use a normal desktop Chrome profile or a separate test profile. Do not run two S
 Test a rendered ChatGPT response and one article that contains nested inline formatting. For a streamed answer, confirm the lens updates when the hovered paragraph changes. Record any unsupported page structure honestly.
 
 The camera feature needs a separate human trial. Do not market gaze accuracy, faster reading, or better comprehension based on passing the extension tests.
+
+## Continue on a Mac with Claude Code
+
+Use the canonical `Aabdulnour/skim-reading-lens` checkout. The next useful milestone is a real installed-extension session and a real-person webcam trial. Do not replace those observations with another model-only compatibility run.
+
+Give the coding agent this task:
+
+```text
+Read AGENTS.md, docs/VALIDATION.md, docs/RELEASE.md and docs/GAZE.md in this checkout.
+Preserve uncommitted work and confirm the current branch and remote before updating.
+Run npm run release and npm run release:check -- --submission.
+Start the local app with npm start only if the project server is not already running.
+Guide Anthony through loading extension/ in desktop Chrome and perform the installed-extension checklist in docs/RELEASE.md.
+Use a synthetic article and a rendered ChatGPT response. Check changing goals, streamed text, selected-text import, Copy pins and Download .txt, remembering one site, denial fallback, pause, forgetting and Escape.
+Use the separate web lab for a physical-camera trial. Anthony must make the camera choice and look at the targets.
+Record calibration and held-out validation results, whether the lens follows the intended paragraphs, and whether the camera indicator turns off after Stop, changing tabs, and closing the lab.
+If a concrete bug appears, fix it, add only the relevant regression coverage, and rerun the affected checks.
+Record the actual browser and OS, observations, fixes and remaining gaps in docs/VALIDATION.md.
+Keep the webcam accuracy thresholds and camera shutdown protections intact. Do not claim human accuracy from mocked tests.
+Return the exact source commit, test results, installed-browser observations and webcam verdict.
+```
+
+The prepared store upload and listing are usable after this check. Account registration, agreements, any registration payment, and publisher attestations belong to the account holder; a coding agent must not report them completed from package tests.
 
 ## Store images and wording
 

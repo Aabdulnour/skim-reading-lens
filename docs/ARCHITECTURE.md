@@ -15,7 +15,7 @@ The attention loop is local. The application smooths webcam estimates, checks re
 
 ## Default data behavior
 
-Pasted text, selected sentences, pins, pointer events, and gaze predictions remain in the current browser context. The app adds no analytics, accounts, or persistent document database. Reloading clears custom text and pins. Browser and hosting infrastructure can still have normal access logs and asset caches.
+Pasted text, selected sentences, pins, pointer events, and gaze predictions remain in the current browser context. The app adds no analytics, accounts, or persistent document database. Reloading clears custom text and pins. The reader can copy pinned sentences to the clipboard or download a plain-text file after a deliberate click. That local export includes the source title and paragraph numbers, preserves sentence wording, and makes no network request. Clipboard denial leaves a download option. The user controls any copied or downloaded file outside the tab. Browser and hosting infrastructure can still have normal access logs and asset caches.
 
 Webcam mode loads the pinned WebGazer 3.5.3 runtime only after consent. The runtime and its required model files are bundled under `dist/vendor/webgazer-3.5.3/` and served by the same host as the lab. The adapter sets the model path explicitly before initialization. This fixes the earlier loader's dependence on model paths that were absent from the deployed site. See [GAZE.md](GAZE.md) for exact provenance, integrity checks, and maintenance instructions.
 
@@ -27,7 +27,7 @@ The camera stream is captured as soon as permission resolves. A generation guard
 
 ## Calibration policy
 
-There are nine targets with five deliberate clicks each. The five validation targets are different positions and do not train the regression. Each gets 850 ms to settle and 1,800 ms of measurement. At least eight valid samples and 70% valid coverage per target are required.
+There are nine targets with five accepted training samples each. A deliberate click counts only when the active pinned ridge model records an additional sample; rejected clicks keep the target in place with feedback. If sample inspection fails, camera setup stops with retry guidance. The five validation targets are different positions and do not train the regression. Each gets 850 ms to settle and 1,800 ms of measurement. At least eight valid samples and 70% valid coverage per target are required.
 
 The error gates depend on the actual paragraph height: median error must be no more than `min(100 px, 0.5 * median visible paragraph height)`. The 90th percentile limit is `min(180 px, 1.8 * median limit)`, and every target's median must also be below that percentile limit. These are conservative prototype policies, not measured guarantees. They may reject many normal webcams. Dependency and lifecycle checks do not establish accuracy on a person's camera or device.
 

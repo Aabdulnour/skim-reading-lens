@@ -392,6 +392,7 @@
         [.88, .5], [.88, .82], [.5, .82], [.12, .82], [.12, .5]
       ].map(([x, y]) => ({ x: x * width, y: y * height }));
       renderStage('Look at the dot, then click it five times.', 'Keep looking at the dot as you click. Keep your head in the same position.');
+      find('#step-description').setAttribute('aria-live', 'polite');
       status('calibrating', 'Calibrating nine screen targets. No gaze drives the reader yet.');
       const target = find('#target');
       target.addEventListener('click', trainClick);
@@ -413,7 +414,31 @@
       if (now - lastClick < 180) return;
       lastClick = now;
       const point = trainingPoints[trainingIndex];
-      wg.recordScreenPosition(point.x, point.y, 'click');
+      try {
+        // The pinned runtime returns itself even when no eye features exist
+        // and the click is discarded. Inspect the active ridge models instead.
+        // Their 50-sample windows exceed this reset session's 45 training clicks.
+        const models = wg.getRegression();
+        if (!Array.isArray(models) || !models.length) throw new Error('No active calibration model.');
+        const sampleCount = model => {
+          const samples = model.getData();
+          if (!Array.isArray(samples)) throw new Error('Calibration samples are unavailable.');
+          return samples.length;
+        };
+        const before = models.map(sampleCount);
+        wg.recordScreenPosition(point.x, point.y, 'click');
+        const after = models.map(sampleCount);
+        if (!after.every((count, index) => count === before[index] + 1)) {
+          find('#step-description').textContent = 'No face sample captured. Keep your face visible, use even lighting, and try this dot again.';
+          return;
+        }
+      } catch (_) {
+        releaseCamera();
+        showResult(false, 'Calibration samples could not be verified.', 'The camera has stopped. Choose Use pointer to close this message, then start camera setup again. If this keeps happening, reload the page or keep using pointer mode.');
+        status('failed', 'Calibration samples could not be verified. Camera stopped; retry camera setup or use pointer mode.');
+        return;
+      }
+      find('#step-description').textContent = 'Sample captured. Keep looking at the dot and keep your head steady.';
       trainingClicks++;
       if (trainingClicks === 5) {
         trainingIndex++;

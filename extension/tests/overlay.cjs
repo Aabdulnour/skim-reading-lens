@@ -94,6 +94,30 @@ async function testOverlay(){
   assert.equal(a.context.__skimPointerOverlay,undefined);assert.equal(a.picked(),'');assert.equal(a.shadow(),undefined);
   console.log('PASS dock: exact source ranges, four-goal selection, streamed text refresh, pause/minimize, automatic idempotence, typing-safe Escape and cleanup');
 
+  const pointer=overlayFixture();await pointer.run();await pointer.move();
+  const highlighted=pointer.picked();
+  await pointer.document.emit('pointerout',{relatedTarget:new pointer.Element('span')});
+  assert.equal(pointer.picked(),highlighted,'moving between page elements keeps the lens active');
+  await pointer.document.emit('pointerout',{relatedTarget:null});
+  assert.equal(pointer.picked(),'','leaving the document clears the highlighted sentence');
+  assert.equal(pointer.shadow().querySelector('.peek').textContent,'','leaving also clears the dock preview');
+  await pointer.document.emit('scroll');await pointer.flush();await pointer.flush();
+  assert.equal(pointer.picked(),'','scroll cannot restore a highlight while the pointer is outside');
+  await pointer.move();assert.equal(pointer.picked(),highlighted,'returning to the page restores normal targeting');
+  await pointer.document.emit('scroll');
+  await pointer.document.emit('pointerout',{relatedTarget:null});await pointer.flush();await pointer.flush();
+  assert.equal(pointer.picked(),'','leaving cancels a scroll that was already waiting to retarget');
+  await pointer.document.emit('pointermove',{target:pointer.paragraph,clientX:300,clientY:260,composedPath(){return [pointer.paragraph];}});
+  await pointer.document.emit('pointerout',{relatedTarget:null});await pointer.flush();
+  assert.equal(pointer.picked(),'','leaving before the dwell finishes does not highlight afterward');
+  await pointer.move();await pointer.window.emit('blur');
+  await pointer.document.emit('scroll');await pointer.flush();await pointer.flush();
+  assert.equal(pointer.picked(),'','scroll cannot reuse pointer coordinates after the window loses focus');
+  await pointer.move();assert.equal(pointer.picked(),highlighted);
+  pointer.context.__skimPointerOverlay.destroy();
+  assert.equal(pointer.document.listeners.get('pointerout').size,0,'closing removes the pointer-exit listener');
+  console.log('PASS dock: pointer exit clears the sentence and preview, cancels pending targeting, and prevents stale scroll highlights after exit or blur');
+
   const paused=overlayFixture({extension:true,preferences:{paused:true}});
   assert.equal((await paused.run()).active,false);assert.equal(paused.calls.dom.length,0);
   const forgotten=overlayFixture({extension:true,sites:[]});forgotten.context.__skimAutoLaunch=true;

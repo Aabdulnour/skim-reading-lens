@@ -39,7 +39,14 @@
       <div class="attention-card"><div class="section-label">YOUR ATTENTION</div><div class="attention-map" id="attention-map" aria-label="Paragraph attention trail"></div><div class="map-caption"><span id="region-label">Paragraph 01</span><span id="dwell-label">ready</span></div></div>
       <div class="catch-card"><div class="catch-heading"><span>✦</span><h3>Worth catching</h3></div><p class="exact-label">EXACT SENTENCE FROM THE TEXT</p><blockquote id="picked-quote"></blockquote><div id="picked-tags" class="picked-tags"></div><div class="selection-reason" id="selection-reason"></div></div>
       <div class="source-note"><span class="note-icon">↳</span><p>Highlighting a claim doesn’t make it true. Keep its context. Check its sources.</p></div>
-      <button id="pin-button" class="pin-button">⌑ Pin this sentence</button><div id="pinned-list" class="pinned-list" aria-label="Pinned sentences"></div>
+      <button id="pin-button" class="pin-button">⌑ Pin this sentence</button>
+      <section class="pins-section" aria-label="Your pinned sentences">
+        <div class="pins-heading"><span>Pinned sentences</span><span id="pin-count" aria-live="polite">0 / 5</span></div>
+        <p id="pins-empty" class="pins-note">Keep the useful lines here, then copy or download them.</p>
+        <div id="pinned-list" class="pinned-list" aria-label="Pinned sentences"></div>
+        <div class="pin-actions"><button id="copy-pins" type="button" disabled>Copy pins</button><button id="download-pins" type="button" disabled>Download .txt</button></div>
+        <p class="pins-note">Only saved when you choose. Switching texts or reloading clears these pins.</p>
+      </section>
       <div class="keys"><kbd>←</kbd><kbd>→</kbd> move between paragraphs<br><kbd>Space</kbd> pause the lens</div>
     </aside>
   </div>

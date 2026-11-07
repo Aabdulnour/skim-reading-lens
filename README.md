@@ -4,9 +4,10 @@
 
 Skim brings a useful original sentence forward when your pointer rests on a paragraph. It is a small reading aid for long replies and articles, with a compact browser dock, a quieter reader, and optional activation on sites you choose.
 
-**Version 0.2.1 is an open-source beta candidate.** The public repository is the development home, and the project site provides the demo and packaged downloads. Chrome Web Store submission and approval are separate steps; there is no published store listing yet.
+**Version 0.2.2 is an open-source beta candidate.** The public repository is the development home, and the project site provides the demo and packaged downloads. Chrome Web Store submission and approval are separate steps; there is no published store listing yet.
 
 - [Source and contributions](https://github.com/Aabdulnour/skim-reading-lens)
+- [Versioned releases](https://github.com/Aabdulnour/skim-reading-lens/releases)
 - [Project and downloads](https://skim-attention-lab-anthony.aabdulnour01.chatgpt.site)
 - [Try the reading lab without installing](https://skim-attention-lab-anthony.aabdulnour01.chatgpt.site/lab.html)
 - [Installation guide](https://skim-attention-lab-anthony.aabdulnour01.chatgpt.site/install.html)
@@ -26,7 +27,7 @@ Support: [justfornow609@gmail.com](mailto:justfornow609@gmail.com). Use syntheti
 
 First installation opens a local practice page. The extension does not need an account, an API key, a server process, or a webcam. Its reading rules run locally. They are English-oriented and can choose an unhelpful sentence.
 
-The **Open page in Skim** action opens a quieter local reader. An explicit text selection takes priority; otherwise Skim tries the latest rendered ChatGPT assistant response, then the page's article or main content. Text is limited to 24,000 characters and never uploaded by the extension.
+The **Open page in Skim** action opens a quieter local reader. An explicit text selection takes priority; otherwise Skim tries the latest rendered ChatGPT assistant response, then the page's article or main content. Text is limited to 24,000 characters and never uploaded by the extension. Pin up to five original sentences, then choose **Copy pins** or **Download .txt** to keep them with the source title and paragraph numbers. Pins otherwise stay in the tab and clear when you switch text or reload.
 
 ## Install the beta
 
@@ -100,9 +101,9 @@ The packaging command creates:
 | Artifact in dist/downloads | Purpose |
 | --- | --- |
 | skim-extension.zip | Unpacked tester install with a containing folder |
-| skim-chrome-store-v0.2.1.zip | Store upload with manifest.json at the ZIP root |
+| skim-chrome-store-v0.2.2.zip | Store upload with manifest.json at the ZIP root |
 | skim-source.zip | Complete publishable source, including tests and build scripts |
-| skim-release-kit-v0.2.1.zip | Store upload, source, listing text, images, and publisher checklist |
+| skim-release-kit-v0.2.2.zip | Store upload, source, listing text, images, and publisher checklist |
 | SHA256SUMS | Digests for the four ZIP files |
 
 ZIP entries have fixed timestamps and permissions. Matching inputs on the same Python/zlib implementation produce matching artifacts. The source bundle excludes credentials, local hosting identity, Git metadata, build caches, and nested download archives.

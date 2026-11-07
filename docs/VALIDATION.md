@@ -1,14 +1,35 @@
 # Validation and release status
 
-Date: November 7, 2026 UTC. Candidate: Skim Reading Lens 0.2.1.
+Updated: November 6, 2026 (America/Toronto). Candidate: Skim Reading Lens 0.2.2.
 
 ## Supported next step
 
 The candidate is prepared for a bounded beta and Chrome Web Store submission preparation. It is not a store-approved release. The public GitHub repository and support address are configured. Publisher registration/contact verification, a real installed-extension smoke test, and Google's review remain separate gates. A successful package check must not be described as completion of those gates.
 
+## Version 0.2.2 continuation evidence
+
+The continuation started from public commit `c4a35aa05e9c48275798990e2f9aa12ebee491a4`. All 133 public tracked files matched the existing Site source. A fresh local release reproduced all four v0.2.1 archive SHA-256 digests. The GitHub Releases collection was empty, confirming that the earlier distribution step had not completed.
+
+The reader now exposes Copy pins and Download .txt, with title and paragraph references. A managed-browser preview using the actual application files confirmed:
+
+- Pinning a caveat preserved “However, it does not include offline access.” exactly.
+- Pinning a detail preserved “The price is $15.50 per month.” exactly.
+- A real downloaded plain-text file contained both exact sentences, the entered title, and paragraph numbers.
+- Clipboard unavailability on the HTTP preview gave the intended download fallback instead of a success claim.
+- Removing all pins restored the empty state and disabled both export actions. After the focus fix, removing the last pin returned keyboard focus to Pin this sentence.
+- Switching source text cleared the previous pins as described in the UI.
+
+The calibration flow now checks the active pinned ridge model before and after each deliberate training click. Only a new stored sample advances the target. New automated cases cover 52 attempted clicks producing 45 accepted samples, failed sample inspection stopping the camera, 40 held-out observations adding no training samples, explicit continuation after a pass, and rejection when each validation target has only seven observations. These are mocked workflow results, not physical-camera accuracy measurements.
+
+The on-page lens also now invalidates pointer coordinates on document exit or window blur. Its fixture covers pending dwell/scroll cancellation, ordinary element transitions, pointer return, and listener cleanup. Real installed-Chrome behavior remains unverified.
+
+The [preview screenshot](assets/pinned-notes-preview.jpg) shows synthetic test text and the new controls. These observations cover a web reader, not an installed Chrome extension.
+
+The connected browser rejected navigation to the Chrome Web Store developer console with “Not allowed”. No publisher registration, payment, account declaration, store upload or submission was performed during this continuation.
+
 ## Automated evidence
 
-`npm test` passes 38 Node tests plus 11 extension scenario groups. `npm run test:release` adds six packaging and source-boundary regressions. The server tests use a mocked TypeSafe provider; the camera tests use mocked browser and WebGazer objects.
+`npm test` passes 42 Node tests plus 12 extension scenario groups. `npm run test:release` adds six packaging and source-boundary regressions. The server tests use a mocked TypeSafe provider; the camera tests use mocked browser and WebGazer objects.
 
 | Area | Behavior covered |
 | --- | --- |

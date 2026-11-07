@@ -1,6 +1,6 @@
 # Chrome Web Store submission copy
 
-**Prepared for:** Skim Reading Lens 0.2.1  
+**Prepared for:** Skim Reading Lens 0.2.2
 **Status:** Submission draft. No public store ID or approval exists yet.  
 **Product scope:** A local pointer-driven reading lens and quiet reader for desktop Chrome.
 
@@ -11,7 +11,7 @@ The uploaded manifest determines the title, version, and short description. Do n
 | Field | Prepared value |
 | --- | --- |
 | Name | Skim Reading Lens |
-| Version | 0.2.1 |
+| Version | 0.2.2 |
 | Short description | Follow your pointer to a useful sentence in long replies and articles. Local by default, with optional per-site activation. |
 | Language | English |
 | Suggested category | Productivity, if that category is available in the current dashboard |
@@ -36,7 +36,7 @@ A small dock keeps the controls close:
 - Remember a site if you want Skim to return there automatically.
 - Forget individual sites or pause everywhere in Settings.
 
-Prefer a quieter view? Open selected text or the current page in Skim's local reader. Read, change your goal, and pin original sentences without creating an account.
+Prefer a quieter view? Open selected text or the current page in Skim's local reader. Read, change your goal, and pin original sentences without creating an account. Copy or download your pins with their title and paragraph numbers when you want to keep them.
 
 First installation includes a short practice page. The core extension needs no API key, camera, subscription, or external server.
 
@@ -120,7 +120,7 @@ The exact image filenames live in store-assets/. One to five 1280×800 screensho
 
 ## Release note
 
-Skim Reading Lens 0.2.1 provides a compact on-page reading dock, optional remembered sites, first-install practice, and local settings. This release adds a public source repository and a concrete support channel. Page text stays local to the extension. This is an early beta and selected sentences can miss the user's intent.
+Skim Reading Lens 0.2.2 provides a compact on-page reading dock, optional remembered sites, first-install practice, and local settings. This release adds a public source repository and a concrete support channel. Page text stays local to the extension. This is an early beta and selected sentences can miss the user's intent.
 
 ## Items the publisher must finish
 

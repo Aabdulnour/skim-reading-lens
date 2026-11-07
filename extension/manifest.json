@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Skim Reading Lens",
   "short_name": "Skim",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "minimum_chrome_version": "120",
   "description": "Follow your pointer to a useful sentence in long replies and articles. Local by default, with optional per-site activation.",
   "homepage_url": "https://skim-attention-lab-anthony.aabdulnour01.chatgpt.site",

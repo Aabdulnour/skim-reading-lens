@@ -9,8 +9,9 @@ const vm = require('node:vm');
 const adapterSource = fs.readFileSync(path.join(__dirname, '../dist/gaze.js'), 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-// This fixture checks camera lifecycle behavior, not webcam accuracy. It uses
-// no real camera, network requests, browser storage, or predicted gaze samples.
+// This fixture checks camera lifecycle and calibration controls, not webcam
+// accuracy. It uses no real camera, network requests, or browser storage.
+// Scripted samples below only exercise the adapter's progression and gates.
 function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = false } = {}) {
   const nodes = new Map();
   const scripts = [];
@@ -55,6 +56,10 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
   const pendingGrants = [];
   const statuses = [];
   const points = [];
+  const reports = [];
+  const trainingCalls = [];
+  let clock = 1000;
+  let acceptTrainingSamples = true;
   let stoppedTracks = 0;
   let modelResets = 0;
   let disposedModels = 0;
@@ -68,13 +73,18 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
   const media = {
     getUserMedia: () => new Promise(resolve => pendingGrants.push(() => resolve(stream)))
   };
+  const regression = {
+    samples: [],
+    init() { modelResets++; this.samples = []; },
+    getData() { return this.samples; }
+  };
   const webgazer = {
     params: {},
     pause() {},
     clearGazeListener() {},
     removeMouseEventListeners() {},
     end() {},
-    getRegression: () => [{ init() { modelResets++; } }],
+    getRegression: () => [regression],
     getTracker: () => tracker,
     setRegression() {},
     saveDataAcrossSessions() {},
@@ -84,7 +94,14 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
     showFaceOverlay() {},
     showFaceFeedbackBox() {},
     showPredictionPoints() {},
-    recordScreenPosition() {},
+    recordScreenPosition(x, y, type) {
+      trainingCalls.push({ x, y, type });
+      if (acceptTrainingSamples) {
+        regression.samples.push({ x, y, type });
+        if (regression.samples.length > 50) regression.samples.shift();
+      }
+      return webgazer;
+    },
     begin() { return media.getUserMedia({ video: true }).then(() => webgazer); }
   };
   const document = {
@@ -107,7 +124,7 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
     location: { protocol: 'https:', href: 'https://skim.example/lab' },
     innerWidth: 1200,
     innerHeight: 900,
-    performance,
+    performance: { now: () => clock },
     DOMException,
     URL,
     WebAssembly: { compile() {} },
@@ -133,7 +150,8 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
   vm.runInNewContext(adapterSource, context, { filename: 'gaze.js' });
   const adapter = context.SkimGaze.create({
     onStatus: status => statuses.push(status),
-    onPoint: point => points.push(point)
+    onPoint: point => points.push(point),
+    onCalibration: report => reports.push(report)
   });
 
   return {
@@ -146,6 +164,11 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
     documentEvents,
     windowEvents,
     webgazer,
+    regression,
+    trainingCalls,
+    reports,
+    acceptTrainingSamples(value) { acceptTrainingSamples = value; },
+    advanceClock(milliseconds) { clock += milliseconds; },
     tracker,
     detector,
     disposedModels: () => disposedModels,
@@ -166,6 +189,34 @@ function fixture({ loaded = true, webgl = true, webgl2 = true, contextLost = fal
       await settle();
     }
   };
+}
+
+async function beginCalibration(f) {
+  await f.adapter.start();
+  f.nodes.get('#consent').listeners.click();
+  await settle();
+  f.pendingGrants.at(-1)();
+  await settle();
+  assert.equal(f.statuses.at(-1).state, 'calibrating');
+}
+
+function clickTrainingTarget(f) {
+  f.advanceClock(200);
+  f.nodes.get('#target').listeners.click({ isTrusted: true, detail: 1 });
+}
+
+function finishValidationTarget(f, sampleCount = 8) {
+  const target = f.nodes.get('#target');
+  f.advanceClock(900);
+  for (let i = 0; i < sampleCount; i++) {
+    f.webgazer.listener({ x: parseFloat(target.style.left), y: parseFloat(target.style.top) });
+  }
+  f.advanceClock(1800);
+  const pending = [...f.timers].find(([, timer]) => timer.delay === 2700);
+  assert.ok(pending, 'the held-out target must have a bounded measurement timer');
+  const [handle, timer] = pending;
+  f.context.clearTimeout(handle);
+  timer.callback();
 }
 
 test('opening camera consent does not request camera access', async t => {
@@ -216,6 +267,112 @@ test('camera initialization reaches calibration only, resets training, and Stop 
   assert.equal(f.points.length, 0);
   f.adapter.stop();
   assert.ok(f.stoppedTracks() >= 1, 'captured stream must stop even if no video element exists');
+});
+
+test('calibration advances only on accepted samples and needs all 45 before validation', async t => {
+  const f = fixture();
+  t.after(() => f.cleanup());
+  await beginCalibration(f);
+  const target = f.nodes.get('#target');
+  const initialPosition = { ...target.style };
+  f.acceptTrainingSamples(false);
+  for (let i = 0; i < 6; i++) clickTrainingTarget(f);
+  assert.equal(f.regression.getData().length, 0);
+  assert.equal(target.textContent, '5');
+  assert.deepEqual(target.style, initialPosition);
+  assert.match(f.nodes.get('#step-footer').textContent, /Target 1 of 9 · 0 of 5/);
+  assert.match(f.nodes.get('#step-description').textContent, /No face sample captured.*try this dot again/);
+
+  f.acceptTrainingSamples(true);
+  for (let i = 0; i < 4; i++) clickTrainingTarget(f);
+  assert.equal(target.textContent, '1');
+  assert.match(f.nodes.get('#step-footer').textContent, /Target 1 of 9 · 4 of 5/);
+  assert.match(f.nodes.get('#step-description').textContent, /Sample captured/);
+  clickTrainingTarget(f);
+  assert.equal(target.textContent, '5');
+  assert.match(f.nodes.get('#step-footer').textContent, /Target 2 of 9 · 0 of 5/);
+  assert.notDeepEqual(target.style, initialPosition);
+
+  for (let i = 0; i < 39; i++) clickTrainingTarget(f);
+  assert.equal(f.regression.getData().length, 44);
+  assert.equal(f.statuses.at(-1).state, 'calibrating');
+  f.acceptTrainingSamples(false);
+  clickTrainingTarget(f);
+  assert.equal(target.textContent, '1');
+  assert.equal(f.statuses.at(-1).state, 'calibrating');
+  f.acceptTrainingSamples(true);
+  clickTrainingTarget(f);
+  assert.equal(f.regression.getData().length, 45);
+  assert.equal(f.trainingCalls.length, 52, 'seven rejected attempts must not count toward the 45 samples');
+  assert.equal(f.statuses.at(-1).state, 'validating');
+  assert.equal(target.listeners.click, undefined);
+  assert.equal(f.points.length, 0);
+});
+
+test('unavailable calibration sample inspection stops the camera and explains how to retry', async t => {
+  for (const failure of ['missing', 'throws', 'invalid', 'no-models', 'after-recording']) {
+    const f = fixture();
+    t.after(() => f.cleanup());
+    await beginCalibration(f);
+    if (failure === 'missing') f.regression.getData = undefined;
+    if (failure === 'throws') f.regression.getData = () => { throw new Error('Unavailable'); };
+    if (failure === 'invalid') f.regression.getData = () => null;
+    if (failure === 'no-models') f.webgazer.getRegression = () => [];
+    if (failure === 'after-recording') {
+      f.regression.getData = () => {
+        if (f.trainingCalls.length) throw new Error('Unavailable');
+        return f.regression.samples;
+      };
+    }
+    clickTrainingTarget(f);
+    assert.equal(f.trainingCalls.length, failure === 'after-recording' ? 1 : 0, failure);
+    assert.equal(f.statuses.at(-1).state, 'failed', failure);
+    assert.match(f.nodes.get('#result-detail').textContent, /camera has stopped.*start camera setup again/i, failure);
+    assert.ok(f.stoppedTracks() >= 1, failure);
+    assert.ok(!f.statuses.some(status => status.state === 'validating' || status.state === 'tracking'), failure);
+    assert.equal(f.points.length, 0, failure);
+  }
+});
+
+test('held-out observations never train and a passing check still requires explicit continuation', async t => {
+  const f = fixture();
+  t.after(() => f.cleanup());
+  await beginCalibration(f);
+  const trainingClick = f.nodes.get('#target').listeners.click;
+  for (let i = 0; i < 45; i++) clickTrainingTarget(f);
+  for (let i = 0; i < 5; i++) {
+    assert.equal(f.nodes.get('#target').listeners.click, undefined);
+    trainingClick({ isTrusted: true, detail: 1 });
+    finishValidationTarget(f);
+    assert.equal(f.trainingCalls.length, 45);
+    assert.equal(f.regression.getData().length, 45);
+    assert.equal(f.points.length, 0);
+  }
+  assert.equal(f.reports.length, 1);
+  assert.equal(f.reports[0].passed, true);
+  assert.equal(f.reports[0].samples, 40);
+  assert.equal(f.reports[0].targets.length, 5);
+  assert.ok(!f.statuses.some(status => status.state === 'tracking'));
+  f.nodes.get('#continue').listeners.click();
+  assert.equal(f.statuses.at(-1).state, 'tracking');
+  f.webgazer.listener({ x: 500, y: 400 });
+  assert.equal(f.points.length, 1);
+  assert.equal(f.trainingCalls.length, 45);
+});
+
+test('accepted training cannot bypass the minimum held-out sample gate', async t => {
+  const f = fixture();
+  t.after(() => f.cleanup());
+  await beginCalibration(f);
+  for (let i = 0; i < 45; i++) clickTrainingTarget(f);
+  for (let i = 0; i < 5; i++) finishValidationTarget(f, 7);
+  assert.equal(f.reports[0].passed, false);
+  assert.equal(f.reports[0].samples, 35);
+  assert.equal(f.statuses.at(-1).state, 'failed');
+  assert.ok(f.stoppedTracks() >= 1);
+  assert.equal(f.trainingCalls.length, 45);
+  assert.equal(f.points.length, 0);
+  assert.ok(!f.statuses.some(status => status.state === 'tracking'));
 });
 
 test('consent loads the pinned same-origin runtime and sets the matching model path before requesting a camera', async t => {

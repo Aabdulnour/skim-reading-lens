@@ -1,6 +1,6 @@
 {
   "name": "skim-attention-lab",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "A local reading lens with an optional per-site Chrome dock and a separate experimental webcam lab.",
   "license": "GPL-3.0-only",
